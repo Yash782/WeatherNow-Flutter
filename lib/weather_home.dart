@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_app/additional_info_items.dart';
 import 'package:weather_app/secertsdata.dart';
 import 'package:weather_app/weather_forcast_items.dart';
@@ -47,7 +48,7 @@ class _WeatherScreanState extends State<WeatherScrean> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Weather App",
+          "Weather Now",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -101,7 +102,7 @@ class _WeatherScreanState extends State<WeatherScrean> {
                 child: Card(
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16))),
-                  elevation: 10,
+                  elevation: 5,
                   color: const Color.fromRGBO(21, 163, 207, 1),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -141,7 +142,7 @@ class _WeatherScreanState extends State<WeatherScrean> {
               //End of main temp widget
               const SizedBox(height: 20),
               const Text(
-                "Weather Forcast",
+                "Hourly Forecast",
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
@@ -151,7 +152,38 @@ class _WeatherScreanState extends State<WeatherScrean> {
               const SizedBox(
                 height: 10,
               ),
-              const SingleChildScrollView(
+              SizedBox(
+                height: 130,
+                child: ListView.builder(
+                    itemCount: 10,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final hourlyforcast = data['list'][index + 1];
+                      final hourlySky = hourlyforcast['weather'][0]['main'];
+                      // Temp fetched and converted to celcius
+                      final hourlyTemp =
+                          (hourlyforcast['main']['temp'] - 273.15)
+                              .toStringAsFixed(2);
+                      //Using sub string method
+                      final timeInTxt =
+                          data['list'][index + 1]['dt_txt'].toString();
+                      //final timeIn12hr = timeInTxt.substring(11, 16);
+
+                      // Using Intle package
+                      final dtTime = DateTime.parse(timeInTxt);
+
+                      return HourlyForcast(
+                        time: DateFormat.j().format(dtTime),
+                        tempreture: hourlyTemp,
+                        icon: hourlySky == 'Cloudy'
+                            ? Icons.cloud
+                            : hourlySky == 'Rain'
+                                ? Icons.cloudy_snowing
+                                : Icons.sunny,
+                      );
+                    }),
+              ),
+              /*              const SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
@@ -177,8 +209,9 @@ class _WeatherScreanState extends State<WeatherScrean> {
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
+              ), */
+
+              const SizedBox(height: 10),
               const Text(
                 "Additional Info",
                 style: TextStyle(
