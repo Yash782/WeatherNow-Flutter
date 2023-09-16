@@ -56,7 +56,9 @@ class _WeatherScreanState extends State<WeatherScrean> {
           IconButton(
             style: const ButtonStyle(),
             padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
-            onPressed: () {},
+            onPressed: () {
+              setState(() {});
+            },
             icon: const Icon(Icons.refresh),
           ),
         ],
